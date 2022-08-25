@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"image/png"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -26,29 +27,36 @@ func main() {
 }
 func Anasayfa(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	view, _ := template.ParseFiles("index.html")
-	view.Execute(w, nil)
+	view.Execute(w, r)
 
 }
 
 func Upload(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-
+	os.Remove("./resized.png")
 	view, _ := template.ParseFiles("upload.html")
-	view.Execute(w, nil)
-	r.ParseMultipartForm(10 << 20)
+	view.Execute(w, r)
+	// r.ParseMultipartForm(10 << 20)
 
-	_, header, err := r.FormFile("file")
+	file, header, err := r.FormFile("file")
 	if err != nil {
 		log.Fatal(err)
 	}
+	header.Filename = "test.png"
+	d, _ := os.Create(header.Filename)
 
-	f, err := os.OpenFile(header.Filename, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0777) //kaydettiğim files
+	io.Copy(d, file)
+	kk, err := os.Open("test.png")
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	// f, err := os.OpenFile(header.Filename, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0777) //kaydettiğim files
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer file.Close()
 
-	img, err := png.Decode(f)
+	// io.Copy(f, file)
 
+	img, err := png.Decode(kk)
+	kk.Close()
 	if err != nil {
 		fmt.Println("hey")
 		log.Fatal(err)
