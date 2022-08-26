@@ -45,18 +45,12 @@ func Upload(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	d, _ := os.Create(header.Filename)
 
 	io.Copy(d, file)
-	kk, err := os.Open("test.png")
+	old, err := os.Open("test.png")
 
-	// f, err := os.OpenFile(header.Filename, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0777) //kaydettiğim files
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer file.Close()
+	// f, err := os.OpenFile(header.Filename, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0777)
 
-	// io.Copy(f, file)
-
-	img, err := png.Decode(kk)
-	kk.Close()
+	img, err := png.Decode(old)
+	old.Close()
 	if err != nil {
 		fmt.Println("hey")
 		log.Fatal(err)

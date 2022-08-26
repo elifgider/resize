@@ -19,8 +19,6 @@
     }
     .card-body{
         background-color:#181A1B;
-        
-        
     }
 </style>
 </head>
@@ -35,13 +33,15 @@
                 <div class="card-header  text-center border-info ">
                  IMAGE RESİZE
                 </div>
+               
                 <div class="card-body " name="card">
+                    <p class="fst-italic small text-center mt-2 pb-2">Şimdilik sadece png formatındaki dosyalarınızı kabul edebiliyoruz!!!</p>
                     <form class="text-center border-info" method="POST" action="/upload" enctype="multipart/form-data">
                        
                             <input  class="my-lg-5  "type="file" name="file">  
                               <label>Width (px):</label>
                               <input class="number" type="number" name="width" data-action="resize" id="pixels_width" maxlength="4" placeholder="Auto">
-                              <input class="mx-lg-4" type="submit">
+                              <input class="mx-lg-4 " type="submit">
                          
                         
                     </form>
