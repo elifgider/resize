@@ -19,6 +19,7 @@ func main() {
 	r := httprouter.New()
 	r.GET("/", Anasayfa)
 	r.POST("/upload", Upload)
+	r.ServeFiles("/admin/assets/*filepath", http.Dir("admin/assets"))
 	log.Println("listening 7000")
 	if err := http.ListenAndServe(":7000", r); err != nil {
 		log.Println(err)
@@ -42,20 +43,31 @@ func Upload(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		log.Fatal(err)
 	}
 	header.Filename = "test.png"
-	d, _ := os.Create(header.Filename)
-
-	io.Copy(d, file)
-	old, err := os.Open("test.png")
+	d, err := os.Create(header.Filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err1 := io.Copy(d, file)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	old, err2 := os.Open("test.png")
+	if err2 != nil {
+		log.Fatal(err)
+	}
 
 	// f, err := os.OpenFile(header.Filename, os.O_RDWR|os.O_CREATE|os.O_SYNC, 0777)
 
-	img, err := png.Decode(old)
+	img, err3 := png.Decode(old)
+	if err3 != nil {
+		log.Fatal(err3)
+	}
 	old.Close()
 	if err != nil {
 		fmt.Println("hey")
 		log.Fatal(err)
 	}
-	new, err := os.Create("resized.png")
+	new, err := os.Create("admin/assets/resized.png")
 	width := r.FormValue("width")
 
 	u64, err := strconv.ParseUint(width, 10, 32)
